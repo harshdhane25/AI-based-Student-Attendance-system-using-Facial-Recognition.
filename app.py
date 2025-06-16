@@ -314,8 +314,6 @@ def register_face_page():
         return redirect(url_for('index'))
     return render_template('register.html')
 
-# ... include all attendance API routes (/api/register_face, /api/identify_face, /api/checkin, /api/checkout) ...
-
 @app.route('/api/register_face', methods=['POST'])
 def register_face():
     data = request.json
@@ -351,82 +349,6 @@ def register_face():
         np.save(os.path.join(class_folder, filename), face_data)
         return jsonify({"status": "success", "message": f"{len(face_data)} faces saved"})
     return jsonify({"status": "fail", "message": "No faces detected"})
-
-# API to identify face without marking
-@app.route('/api/identify_face', methods=['POST'])
-def identify_face():
-    data = request.json
-    class_name = data['class_name']
-    img_data = data['image']
-    img_bytes = base64.b64decode(img_data.split(",")[1])
-    np_arr = np.frombuffer(img_bytes, np.uint8)
-    img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-
-    class_folder = os.path.join(dataset_path, class_name)
-    if not os.path.exists(class_folder):
-        return jsonify({"status": "fail", "message": "No data for this class"})
-
-    # Load training data for this class
-    face_data = []
-    labels = []
-    names = {}
-    class_id = 0
-    for file in os.listdir(class_folder):
-        if file.endswith('.npy'):
-            data_arr = np.load(os.path.join(class_folder, file))
-            face_data.append(data_arr)
-            parts = file[:-4].split('_', 1)
-            labels.extend([class_id] * data_arr.shape[0])
-            names[class_id] = {'enrollment': parts[0], 'name': parts[1]}
-            class_id += 1
-
-    if not face_data:
-        return jsonify({"status": "fail", "message": "No trained data found"})
-
-    X_train = np.concatenate(face_data, axis=0)
-    y_train = np.array(labels).reshape(-1, 1)
-    trainset = np.hstack((X_train, y_train))
-
-    for (x, y, w, h) in faces[:1]:
-        face = img[y:y+h, x:x+w]
-        face = cv2.resize(face, (100, 100)).flatten()
-        pred_id = knn(trainset, face)
-        info = names.get(pred_id)
-        if info:
-            return jsonify({
-                "status": "success",
-                "name": info['name'],
-                "enrollment": info['enrollment']
-            })
-    return jsonify({"status": "fail", "message": "Face not recognized"})
-
-# API to check-in
-@app.route('/api/checkin', methods=['POST'])
-def api_checkin():
-    data = request.json
-    class_name = data['class_name']
-    enrollment = data['enrollment']
-    name = data['name']
-    attendance = AttendanceSystem(class_name)
-    ok, msg = attendance.checkin(enrollment, name)
-    status = "success" if ok else "fail"
-    return jsonify({"status": status, "message": msg})
-
-# API to check-out
-@app.route('/api/checkout', methods=['POST'])
-def api_checkout():
-    data = request.json
-    class_name = data['class_name']
-    enrollment = data['enrollment']
-    attendance = AttendanceSystem(class_name)
-    ok, msg = attendance.checkout(enrollment)
-    status = "success" if ok else "fail"
-    return jsonify({"status": status, "message": msg})
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
