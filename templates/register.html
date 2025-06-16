@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Face</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        video {
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #eee;
+            max-width: 100%;
+        }
+        #status {
+            margin-top: 15px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .back-link {
+            color: #3498db;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+        .progress {
+            margin-top: 10px;
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-link">
+                <i class="fas fa-arrow-left"></i> &nbsp;Back to Home
+            </a>
+            <h2>Register Face</h2>
+        </div>
+        <div class="form-container">
+            <select id="class-select" required>
+                <option value="">Select Class</option>
+                <option value="SY-19">SY-19</option>
+                <option value="SY-20">SY-20</option>
+                <option value="SY-21">SY-21</option>
+                <option value="SY-22">SY-22</option>
+            </select>
+            <input type="text" id="name" placeholder="Enter your name" required>
+            <input type="text" id="enrollment" placeholder="Enter Enrollment Number" required>
+            <button onclick="startCapture()" class="btn">
+                <i class="fas fa-camera"></i> Start Capture
+            </button>
+            <div class="video-container">
+                <video id="video" width="300" autoplay></video>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <p id="status">Select class, enter details, and click "Start Capture"</p>
+        </div>
+    </div>
+    <script src="/static/js/webcam.js"></script>
+    <script>
+    let frames = [];
+    let interval;
+    const TOTAL_FRAMES = 120;
+    function startCapture() {
+        const className = document.getElementById('class-select').value;
+        const name = document.getElementById('name').value.trim();
+        const enrollment = document.getElementById('enrollment').value.trim();
+        if (!className) return alert('Please select a class');
+        if (!name) return alert('Please enter your name');
+        if (!enrollment) return alert('Please enter enrollment number');
+        frames = [];
+        document.getElementById('status').innerHTML = 'Capturing...<br><small>Slowly move your head</small>';
+        document.getElementById('progress-bar').style.width = '0%';
+        interval = setInterval(() => {
+            captureFrame(frames);
+            const progress = (frames.length / TOTAL_FRAMES) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            if (frames.length >= TOTAL_FRAMES) {
+                clearInterval(interval);
+                document.getElementById('status').innerHTML = 'Processing...';
+                fetch('/api/register_face', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        class_name: className,
+                        name: name,
+                        enrollment: enrollment,
+                        images: frames
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    let msg = data.message;
+                    if (data.status === 'success') {
+                        msg += '. Please maintain consistent lighting.';
+                    }
+                    document.getElementById('status').innerHTML = msg;
+                });
+            }
+        }, 1000);
+    }
+    initWebcam('video');
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+</body>
+</html>

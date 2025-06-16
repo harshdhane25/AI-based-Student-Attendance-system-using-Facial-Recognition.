@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MIT Art, Design and Technology University</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" />
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+  <style>
+    /* ====== Reset & Base ====== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f0f4f8 0%, #d7e1ec 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* ====== Header ====== */
+    header {
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 15px 0;
+      margin-bottom: 40px;
+      border-bottom: 3px solid #1a4a7c;
+    }
+    
+    header .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    header img {
+      height: 70px;
+      margin-right: 20px;
+      border-radius: 5px;
+    }
+    
+    header h1 {
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: #1a4a7c;
+      margin: 0;
+      text-align: center;
+    }
+
+    /* ====== Login Card ====== */
+    .login-box {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 35px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      margin-bottom: 40px;
+      border-top: 4px solid #1a4a7c;
+      position: relative;
+    }
+    
+    .login-box:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: linear-gradient(90deg, #1a4a7c, #3498db);
+      border-radius: 12px 12px 0 0;
+      opacity: 0.8;
+    }
+    
+    .login-box h2 {
+      color: #1a4a7c;
+      margin-bottom: 25px;
+      font-weight: 600;
+      text-align: center;
+      position: relative;
+      padding-bottom: 12px;
+    }
+    
+    .login-box h2:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, #1a4a7c, #3498db);
+    }
+    
+    .section-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    .section-buttons button {
+      flex: 1;
+      padding: 14px 0;
+      background-color: #f5f9ff;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      color: #555;
+      transition: all 0.3s;
+      border-right: 1px solid #e0e0e0;
+    }
+    
+    .section-buttons button:last-child {
+      border-right: none;
+    }
+    
+    .section-buttons button:hover {
+      background-color: #e6f0ff;
+    }
+    
+    .section-buttons button.active {
+      background-color: #1a4a7c;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(26, 74, 124, 0.3);
+    }
+    
+    .form-section {
+      display: none;
+      margin-top: 20px;
+    }
+    
+    .form-section h3 {
+      color: #1a4a7c;
+      margin-bottom: 20px;
+      font-weight: 500;
+      text-align: center;
+    }
+    
+    .input-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #444;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    
+    .input-group input {
+      width: 100%;
+      padding: 14px 15px 14px 40px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: all 0.3s;
+      background-color: #f9fbff;
+    }
+    
+    .input-group input:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+      background-color: #fff;
+    }
+    
+    .input-group i {
+      position: absolute;
+      left: 15px;
+      top: 38px;
+      color: #aaa;
+      transition: color 0.3s;
+    }
+    
+    .input-group input:focus + i {
+      color: #3498db;
+    }
+    
+    .form-section button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(to right, #1a4a7c, #3498db);
+      transition: all 0.3s;
+      margin-top: 15px;
+      box-shadow: 0 4px 10px rgba(26, 74, 124, 0.3);
+    }
+    
+    .form-section button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(26, 74, 124, 0.4);
+      background: linear-gradient(to right, #155785, #2980b9);
+    }
+
+    /* ====== Modal ====== */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      backdrop-filter: blur(3px);
+    }
+    
+    .modal-container {
+      background: #fff;
+      border-radius: 12px;
+      padding: 35px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+      position: relative;
+      border-top: 4px solid #1a4a7c;
+      animation: modalFadeIn 0.3s;
+    }
+    
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .close-button {
+      position: absolute;
+      top: 15px; right: 15px;
+      background: #f0f4f8;
+      border: none;
+      font-size: 20px;
+      color: #555;
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    
+    .close-button:hover {
+      background: #e0e6ed;
+      color: #1a4a7c;
+      transform: rotate(90deg);
+    }
+
+    /* ====== Notes Card ====== */
+    .notes-card {
+      width: 100%;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .notes-card .card-header {
+      background-color: #1a4a7c;
+      color: white;
+      padding: 15px 20px;
+      font-weight: 600;
+      border: none;
+    }
+    
+    .notes-card .card-body {
+      padding: 25px;
+    }
+    
+    .notes-card .card-body h5 {
+      font-weight: 600;
+      margin-top: 15px;
+      color: #1a4a7c;
+      display: flex;
+      align-items: center;
+    }
+    
+    .notes-card .card-body h5 i {
+      margin-right: 10px;
+      color: #3498db;
+    }
+    
+    .notes-card ul {
+      margin-top: 15px;
+      padding-left: 20px;
+    }
+    
+    .notes-card ul li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    
+    .notes-card a {
+      color: #3498db;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .notes-card a:hover {
+      color: #1a4a7c;
+      text-decoration: underline;
+    }
+    
+    /* ====== Responsive Adjustments ====== */
+    @media (max-width: 768px) {
+      header h1 { font-size: 1.4rem; margin-top: 10px; }
+      .login-box { padding: 25px; }
+      .section-buttons button { font-size: 14px; padding: 12px 0; }
+      .modal-container { padding: 25px; margin: 0 15px; }
+    }
+    
+    @media (max-width: 576px) {
+      header img { height: 50px; }
+      header h1 { font-size: 1.2rem; }
+    }
+
+    /* Toast message */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1001;
+    }
+    
+    .toast {
+      background-color: rgba(26, 74, 124, 0.9);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      animation: toastFadeIn 0.3s;
+      backdrop-filter: blur(5px);
+    }
+    
+    .toast i {
+      margin-right: 10px;
+      font-size: 20px;
+    }
+    
+    @keyframes toastFadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <img src="https://exam.mitapps.in/site/static/images/mit.jpg" alt="MIT-ADT Logo">
+    </div>
+    <br>
+    <h1>MIT Art, Design and Technology University, Pune</h1>
+  </header>
+
+  <!-- Login Card -->
+  <div class="login-box">
+    <h2>Welcome to Attendance Portal</h2>
+
+    <div class="section-buttons">
+      <button id="teacherBtn" onclick="showForm('teacher')">
+        <i class="fas fa-chalkboard-teacher"></i> Teacher
+      </button>
+      <button id="studentBtn" onclick="showForm('student')">
+        <i class="fas fa-user-graduate"></i> Student
+      </button>
+      <button id="attendanceBtn" onclick="showForm('attendance')">
+        <i class="fas fa-clipboard-check"></i> Attendance
+      </button>
+    </div>
+
+    <div id="teacher" class="form-section">
+      <h3>Teacher Login</h3>
+      <div class="input-group">
+        <label for="teacherUsername">Username</label>
+        <input type="text" id="teacherUsername" placeholder="Enter your username" />
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="input-group">
+        <label for="teacherPassword">Password</label>
+        <input type="password" id="teacherPassword" placeholder="Enter your password" />
+        <i class="fas fa-lock"></i>
+      </div>
+      <button onclick="attemptLogin('teacher')">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </button>
+      <div class="link">
+        <a href="#" onclick="showSignup('Teacher'); return false;">Don't have an account? Create one</a>
+      </div>
+    </div>
+
+    <div id="student" class="form-section">
+      <h3>Student Login</h3>
+      <div class="input-group">
+        <label for="studentUsername">Username</label>
+        <input type="text" id="studentUsername" placeholder="Enter your username" />
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="input-group">
+        <label for="studentPassword">Password</label>
+        <input type="password" id="studentPassword" placeholder="Enter your password" />
+        <i class="fas fa-lock"></i>
+      </div>
+      <button onclick="attemptLogin('student')">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </button>
+      <div class="link">
+        <a href="#" onclick="showSignup('Student'); return false;">Don't have an account? Create one</a>
+      </div>
+    </div>
+
+    <div id="attendance" class="form-section">
+      <h3>Mark Attendance</h3>
+<button onclick="window.location.href='/mark_attendance'">
+    <i class="fas fa-clipboard-check"></i> Mark Attendance
+</button>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div class="modal-overlay" id="signupModal">
+    <div class="modal-container">
+      <button class="close-button" onclick="closeSignup()">×</button>
+      <h3 id="signupTitle">Create Account</h3>
+      <div class="input-group">
+        <label for="signupFullname">Full Name</label>
+        <input type="text" id="signupFullname" placeholder="Enter your full name" />
+        <i class="fas fa-user"></i>
+      </div>
+      <!-- Enrollment Number field, hidden by default -->
+      <div class="input-group" id="enrollmentGroup" style="display: none;">
+        <label for="signupEnrollment">Enrollment Number</label>
+        <input type="text" id="signupEnrollment" placeholder="e.g, ADT24SOCBD053" />
+        <i class="fas fa-id-card"></i>
+      </div>
+      <div class="input-group">
+        <label for="signupEmail">Email Address</label>
+        <input type="email" id="signupEmail" placeholder="Enter your email address" />
+        <i class="fas fa-envelope"></i>
+      </div>
+      <div class="input-group">
+        <label for="signupUsername">Username</label>
+        <input type="text" id="signupUsername" placeholder="Choose a username" />
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <div class="input-group">
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" placeholder="Choose a password" />
+        <i class="fas fa-lock"></i>
+      </div>
+      <div class="input-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" placeholder="Confirm your password" />
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <button onclick="createAccount()">
+        <i class="fas fa-user-plus"></i> Create Account
+      </button>
+      <div class="link">
+        <a href="#" onclick="closeSignup(); return false;">Already have an account? Login</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast messages container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Important Notes Card -->
+  <div class="container">
+    <div class="card notes-card">
+      <div class="card-header">
+        <i class="fas fa-info-circle"></i> Important Information
+      </div>
+      <div class="card-body">
+        <h5><i class="fas fa-exclamation-circle"></i> Important Note:</h5>
+        <ul>
+          <li>Upload a clear front-facing photo in your student profile to activate Face Recognition Attendance.</li>
+          <li>Be present in class on time – attendance is auto-marked using your face.</li>
+          <li>Manual attendance is not allowed – ensure your face is visible and unobstructed.</li>
+          <li>Minimum 75% attendance (via face recognition) is mandatory for exam eligibility.</li>
+        </ul>
+
+        <h5><i class="fas fa-link"></i> Weblinks:</h5>
+        <ul>
+          <li><i class="fas fa-external-link-alt"></i> University Website: <a href="https://www.mituniversity.ac.in/" target="_blank">www.mituniversity.ac.in</a></li>
+          <li><i class="fas fa-external-link-alt"></i> A B o C: <a href="#" target="_blank">www.abc.gov.in</a> (<a href="#" target="_blank">A I C G</a>)</li>
+          <li><i class="fas fa-external-link-alt"></i> D N: <a href="#" target="_blank">ni</a></li>
+          <li><i class="fas fa-external-link-alt"></i> A P: <a href="#" target="_blank">ain</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => showForm('teacher'));
+
+    function showForm(section) {
+      document.querySelectorAll('.form-section').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.section-buttons button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(section).style.display = 'block';
+      document.getElementById(section + 'Btn').classList.add('active');
+    }
+
+    function showSignup(role) {
+      window.currentSignupRole = role;
+      document.getElementById('signupTitle').textContent = role + " Signup";
+      const enrollmentGroup = document.getElementById('enrollmentGroup');
+      enrollmentGroup.style.display = role === 'Student' ? 'block' : 'none';
+      document.getElementById('signupModal').style.display = 'flex';
+    }
+
+    function closeSignup() {
+      document.getElementById('signupModal').style.display = 'none';
+    }
+
+    function createAccount() {
+      const fullname = document.getElementById('signupFullname').value;
+      const email = document.getElementById('signupEmail').value;
+      const username = document.getElementById('signupUsername').value;
+      const password = document.getElementById('signupPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const role = window.currentSignupRole.toLowerCase();
+      let enrollment_number = null;
+
+      if (role === 'student') {
+        enrollment_number = document.getElementById('signupEnrollment').value;
+        if (!enrollment_number) {
+          showToast('Please enter your enrollment number', 'error');
+          return;
+        }
+      }
+
+      if (!fullname || !email || !username || !password || !confirmPassword) {
+        showToast('Please fill all fields', 'error');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showToast('Passwords do not match!', 'error');
+        return;
+      }
+
+      const data = {
+        full_name: fullname,
+        email: email,
+        username: username,
+        password: password,
+        role: role,
+        enrollment_number: enrollment_number
+      };
+
+      fetch('/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showToast('Account created successfully!', 'success');
+          setTimeout(() => closeSignup(), 1500);
+        } else {
+          showToast(data.message, 'error');
+        }
+      })
+      .catch(() => showToast('An error occurred. Please try again.', 'error'));
+    }
+
+    function attemptLogin(type) {
+      const username = document.getElementById(type + 'Username').value;
+      const password = document.getElementById(type + 'Password').value;
+
+      if (!username || !password) {
+        showToast('Please enter both username and password', 'error');
+        return;
+      }
+
+      const data = { username, password, role: type };
+
+      fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showToast('Login successful! Redirecting...', 'success');
+          setTimeout(() => window.location.href = data.redirect, 1500);
+        } else {
+          showToast(data.message, 'error');
+        }
+      })
+      .catch(() => showToast('An error occurred. Please try again.', 'error'));
+    }
+
+    function markAttendance() {
+      showToast('Attendance marked successfully!', 'success');
+    }
+
+    function showToast(message, type = 'info') {
+      const toastContainer = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      let icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle';
+      toast.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
+      toastContainer.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
+        toast.style.transition = 'all 0.3s';
+        setTimeout(() => toastContainer.removeChild(toast), 300);
+      }, 8000);
+    }
+
+    window.onclick = function(e) {
+      if (e.target === document.getElementById('signupModal')) closeSignup();
+    }
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.min.js"></script>
+</body>
+</html>

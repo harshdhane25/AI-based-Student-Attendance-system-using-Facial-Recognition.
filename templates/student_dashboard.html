@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #d7e1ec 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .dashboard-box {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 35px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-top: 4px solid #1a4a7c;
+        }
+        h1 {
+            color: #1a4a7c;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        p {
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #1a4a7c, #3498db);
+            border: none;
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(to right, #155785, #2980b9);
+        }
+        .btn-secondary {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-box">
+        <h1>Welcome, {{ user.full_name }}</h1>
+        <p>Enrollment Number: {{ user.enrollment_number }}</p>
+        <p>Email: {{ user.email }}</p>
+        <button class="btn btn-primary" onclick="window.location.href='/register_face'">Register Face</button>
+        <a href="/logout" class="btn btn-secondary">Logout</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 15px 0;
+        }
+        .btn:hover {
+            background-color: #219653;
+        }
+        video {
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #eee;
+            max-width: 100%;
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            display: inline-block;
+            min-width: 60%;
+        }
+        .success {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .back-link {
+            color: #3498db;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .video-container {
+            position: relative;
+            margin: 0 auto;
+            width: 320px;
+            max-width: 100%;
+        }
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid rgba(52, 152, 219, 0.5);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        .loading {
+            display: none;
+            margin: 20px auto;
+            border: 5px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 5px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-link">
+                <i class="fas fa-arrow-left"></i> &nbsp;Back to Home
+            </a>
+            <h2>Mark Attendance</h2>
+        </div>
+        <select id="class-select-mark">
+            <option value="">Select Class</option>
+            <option value="SY-19">SY-19</option>
+            <option value="SY-20">SY-20</option>
+            <option value="SY-21">SY-21</option>
+            <option value="SY-22">SY-22</option>
+        </select>
+        <div class="video-container">
+            <video id="video" width="300" autoplay></video>
+            <div class="camera-overlay"></div>
+        </div>
+        <button onclick="scanFace()" class="btn">
+            <i class="fas fa-user-check"></i> Scan Face
+        </button>
+        <div id="result"></div>
+        <p id="status">Select class and click "Scan Face"</p>
+    </div>
+
+    <script src="/static/js/webcam.js"></script>
+    <script>
+    function scanFace() {
+        const className = document.getElementById('class-select-mark').value;
+        if (!className) return alert('Please select a class');
+        document.getElementById('status').innerText = 'Scanning...';
+        captureFrame([], true).then(image => {
+            fetch('/api/identify_face', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({class_name: className, image: image})
+            })
+            .then(res => res.json())
+            .then(data => {
+                const result = document.getElementById('result');
+                if (data.status === 'success') {
+                    result.innerHTML = `
+                        <p>Is this you? <strong>${data.name}</strong> (${data.enrollment})</p>
+                        <button id="checkin-btn" class="btn">Check In</button>
+                        <button id="checkout-btn" class="btn">Check Out</button>
+                        <button id="rescan-btn" class="btn">Rescan</button>
+                    `;
+                    document.getElementById('status').innerText = '';
+                    document.getElementById('checkin-btn').onclick = () => handleAction('checkin', className, data.enrollment, data.name);
+                    document.getElementById('checkout-btn').onclick = () => handleAction('checkout', className, data.enrollment, data.name);
+                    document.getElementById('rescan-btn').onclick = () => { result.innerHTML = ''; document.getElementById('status').innerText = 'Select class and click "Scan Face"'; };
+                } else {
+                    result.innerHTML = `<span class="error">${data.message}</span><br><button id="rescan-btn" class="btn">Rescan</button>`;
+                    document.getElementById('rescan-btn').onclick = () => { result.innerHTML = ''; document.getElementById('status').innerText = 'Select class and click "Scan Face"'; };
+                }
+            });
+        });
+    }
+
+    function handleAction(action, className, enrollment, name) {
+        fetch(`/api/${action}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({class_name: className, enrollment: enrollment, name: name})
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('status').innerText = 'Select class and click "Scan Face"';
+        });
+    }
+
+    initWebcam('video');
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+</body>
+</html>
